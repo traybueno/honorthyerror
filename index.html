@@ -24,6 +24,8 @@
     text-underline-offset: 4px;
     transition: all 0.3s ease;
     z-index: 1000;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
 .about-btn:hover {
@@ -41,6 +43,8 @@
     z-index: 1001;
     justify-content: center;
     align-items: center;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
 }
 
 .modal-content {
@@ -80,6 +84,9 @@
     font-family: 'Montserrat', sans-serif;
     font-size: 24px;
     transition: color 0.3s ease;
+    padding: 15px; /* Makes touch target bigger */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
        
@@ -728,23 +735,52 @@ window.addEventListener('click', (e) => {
    </script>
    <script>
     // Add modal functionality
-    const modal = document.querySelector('.modal');
-    const aboutBtn = document.querySelector('.about-btn');
-    const closeBtn = document.querySelector('.close-btn');
+// Add modal functionality with touch support
+const modal = document.querySelector('.modal');
+const aboutBtn = document.querySelector('.about-btn');
+const closeBtn = document.querySelector('.close-btn');
 
-    aboutBtn.onclick = function() {
-        modal.style.display = 'flex';
-    }
+// Helper function to handle modal display
+function showModal() {
+    modal.style.display = 'flex';
+}
 
-    closeBtn.onclick = function() {
-        modal.style.display = 'none';
-    }
+function hideModal() {
+    modal.style.display = 'none';
+}
 
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = 'none';
-        }
+// About button events
+aboutBtn.addEventListener('click', showModal);
+aboutBtn.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    showModal();
+}, { passive: false });
+
+// Close button events
+closeBtn.addEventListener('click', hideModal);
+closeBtn.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    hideModal();
+}, { passive: false });
+
+// Modal background click/touch events
+modal.addEventListener('click', (event) => {
+    if (event.target === modal) {
+        hideModal();
     }
+});
+
+modal.addEventListener('touchend', (event) => {
+    if (event.target === modal) {
+        event.preventDefault();
+        hideModal();
+    }
+}, { passive: false });
+
+// Prevent touchmove on modal to avoid background scrolling
+modal.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+}, { passive: false });
 </script>
 </body>
 </html>
